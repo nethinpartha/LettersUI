@@ -1,6 +1,6 @@
 <template>
     <div class="list-bar">
-        <div>{{ content }} <span>{{ likes }}</span></div>
+        <div><a href=""> {{ content }} </a> <span>{{ likes }}</span></div>
         <hr>   
     </div>
 </template>
