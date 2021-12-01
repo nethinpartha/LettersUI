@@ -6,7 +6,6 @@
         <div v-for="con in contents" :key="con.blog_id">
             <ListBar :name="con.display_name" :likes="con.updates.likes" 
             :description="con.description" :blog_id="con.blog_id"></ListBar>
-            <hr>
         </div>
         <div>
             <Footer />
@@ -43,3 +42,7 @@ export default {
     methods: {}
 }
 </script>
+
+<style>
+
+</style>

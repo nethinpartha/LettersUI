@@ -1,5 +1,8 @@
 <template>
-    <header><h2>From Company</h2></header>
+    <footer>
+        <h4>from</h4>
+        <h4>Fox Company</h4>
+    </footer>
 </template>
 
 
