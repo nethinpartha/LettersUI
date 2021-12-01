@@ -1,7 +1,9 @@
 <template>
     <div class="list-bar"> 
-        <div> <a :href="viewUrl">{{ name }}</a> <span>{{ likes }}</span></div>
+        <div> <a :href="viewUrl">{{ name }}</a> <span class="like-post">liked {{ likes }}</span></div>
         <div>{{ description  }}</div>  
+        <br>
+        <br>
     </div>
 </template>
 

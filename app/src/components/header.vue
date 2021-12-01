@@ -1,5 +1,10 @@
 <template>
-    <header><h2><span class="logo">L</span>etters</h2></header>
+    <header>
+        <nav>
+            <span class="logo">L</span>etters
+            <input class="header-search" type="search" name="search" id="search" placeholder="search">
+        </nav>
+    </header>
 </template>
 
 
@@ -10,9 +15,5 @@ export default {
 </script>
 
 <style>
-
-.logo{
-    color: green;
-}
 
 </style>

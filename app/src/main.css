@@ -1,0 +1,52 @@
+* {
+	box-sizing: border-box;
+    font-size: medium;
+  }
+*::selection{
+    background: #60b893;
+}
+a{
+    text-decoration: none;
+    color: green;
+    font-size: large;
+}
+.logo{
+    color: green;
+    font-size: 1.5em;
+    font-weight: bolder;
+}
+header nav{
+    padding-left: 10px;
+    font-size: 1.5em;
+    font-weight: bolder;
+    padding-bottom: 40px;
+}
+.header-search{
+   width: 250px;
+   margin-left: 20px;
+   border : solid;
+   border-color: green;
+   border-radius: 3px;
+}
+
+/*body */
+.list-bar{
+    margin-left: 15px;
+    width: 60%;
+}
+.list-bar a:hover{
+    text-transform: capitalize;
+}
+
+.like-post{
+    position: absolute;
+    right: 50%;
+}
+
+/*body */
+
+/*footer */
+footer h4{
+    text-align: center;
+    font-style: italic;
+}
