@@ -1,5 +1,5 @@
 <template>
-    <header><h2>Letters</h2></header>
+    <header><h2><span class="logo">L</span>etters</h2></header>
 </template>
 
 
@@ -10,5 +10,9 @@ export default {
 </script>
 
 <style>
+
+.logo{
+    color: green;
+}
 
 </style>

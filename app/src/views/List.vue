@@ -3,9 +3,10 @@
         <div>
             <Header />
         </div>
-        <div v-for="con in contents" :key="con">
-            <ListBar :content="con.data" :likes="con.likes">
-            </ListBar>
+        <div v-for="con in contents" :key="con.blog_id">
+            <ListBar :name="con.display_name" :likes="con.updates.likes" 
+            :description="con.description" :blog_id="con.blog_id"></ListBar>
+            <hr>
         </div>
         <div>
             <Footer />
@@ -16,6 +17,7 @@
 
 <script>
 
+import axios from 'axios'
 import Header from "../components/header.vue"
 import Footer from "../components/footer.vue"
 import ListBar from "../components/ListBar.vue"
@@ -29,20 +31,15 @@ export default {
     },
     data(){
         return {
-            contents : [{
-                "data": "apple",
-                "likes": 100
-            },{
-                "data": "orange",
-                "likes": 100
-            },{
-                "data": "grapes",
-                "likes": 100
-            },{
-                "data": "watermelon",
-                "likes": 100
-            }]
+            contents : []
         }
-    }
+    },
+    // Get paginated blogs on page load
+    beforeMount()
+    {
+    let listBlogsUrl = process.env.VUE_APP_BASE_URL + process.env.VUE_APP_APP_URL + process.env.VUE_APP_LIST_URL
+    axios.get(listBlogsUrl).then(response => (this.contents = response.data.data))
+    },
+    methods: {}
 }
 </script>

@@ -9,7 +9,7 @@ const routes = [
     component: List
   },
   {
-    path: '/view',
+    path: '/view/:id',
     name: 'View',
     component: Read
     // route level code-splitting
