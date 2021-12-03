@@ -1,9 +1,10 @@
 <template>
     <div class="list-bar"> 
-        <div> <a :href="viewUrl">{{ name }}</a> <span class="like-post">liked {{ likes }}</span></div>
+        <div> <a :href="viewUrl">{{ name }}</a> <span class="like-post">Liked {{ likes }}</span>
+        <span class="dislike-post">Disliked {{ dislikes }}</span></div>
         <div>{{ description  }}</div>  
         <br>
-        <br>
+        <br>    
     </div>
 </template>
 
@@ -12,7 +13,7 @@
 
 export default {
     name: "ListBar",
-    props: ["name", "description", "likes", "blog_id"],
+    props: ["name", "description", "likes", "dislikes", "blog_id"],
     data(){
         return {
          viewUrl: "/view/" + this.blog_id
