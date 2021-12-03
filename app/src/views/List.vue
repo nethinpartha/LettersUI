@@ -4,7 +4,7 @@
             <Header />
         </div>
         <div v-for="con in contents" :key="con.blog_id">
-            <ListBar :name="con.display_name" :likes="con.updates.likes" 
+            <ListBar :name="con.display_name" :likes="con.updates.likes" :dislikes="con.updates.dislikes"
             :description="con.description" :blog_id="con.blog_id"></ListBar>
         </div>
         <div>
