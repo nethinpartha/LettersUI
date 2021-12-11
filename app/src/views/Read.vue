@@ -11,6 +11,18 @@
             <input type="button" value="Dislike" @click="updateDislikes()"><p>{{ contents.updated.dislikes }}</p>
         </div>
         <div>
+            <p> Latest Contents </p>
+            <div v-for="lcon in contents.latest_contents" :key="lcon.blog_id">
+            <a :href="viewUrl(lcon.blog_id)">{{ lcon.display_name  }}</a>
+            </div>
+        </div>
+        <div>
+            <p>Popular contents</p>
+            <div v-for="pcon in contents.popular_contents" :key="pcon.blog_id">
+            <a :href="viewUrl(pcon.blog_id)">{{ pcon.display_name  }}</a>
+            </div>
+        </div>
+        <div>
             <p><b>Add comment..</b></p>
             <textarea type="text" class="comment" placeholder="Write a comment" v-model="commentValue" 
             @keyup.enter="updateComment()"></textarea>
@@ -20,7 +32,6 @@
         <div v-for="(comment, index) in contents.updated.comments" :key="index">
             <div>{{ comment }}</div>
         </div>
-        <div><Footer /></div>
     </div>    
 </template>
 
@@ -28,13 +39,11 @@
 
 import axios from 'axios'
 import Header from "../components/header.vue"
-import Footer from "../components/footer.vue"
 
 export default {
     name: "Read",
     components: {
-        Header,
-        Footer
+        Header
     },
     data(){
         return{
@@ -45,9 +54,14 @@ export default {
     beforeMount(){
         let readBlogUrl = process.env.VUE_APP_BASE_URL + process.env.VUE_APP_APP_URL + process.env.VUE_APP_READ_URL
         let viewUrl = readBlogUrl + "?blog_id=" + this.$route.params.id
+        console.log("Before Mount")
         axios.get(viewUrl).then(response => (this.contents = response.data))
+        console.log(this.contents)
     },
     methods: {
+        viewUrl(blogId){
+            return "/view/" + blogId
+        },
         updateComment(){
             let updateBlogUrl = process.env.VUE_APP_BASE_URL + process.env.VUE_APP_APP_URL + process.env.VUE_APP_UPDATE_URL
             let updateReq = {

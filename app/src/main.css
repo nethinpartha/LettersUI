@@ -35,7 +35,7 @@ header nav{
     width: 60%;
 }
 .list-bar a:hover{
-    text-transform: capitalize;
+    text-transform: uppercase;
 }
 
 .like-post{
@@ -46,7 +46,7 @@ header nav{
 /*body */
 
 /*footer */
-footer h4{
-    text-align: center;
+footer a{
+    margin-left: 50%;
     font-style: italic;
 }
