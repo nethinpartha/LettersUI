@@ -1,7 +1,6 @@
 <template>
     <footer>
-        <h4>from</h4>
-        <h4>Fox Company</h4>
+        <a href="/aboutus">About Us</a>
     </footer>
 </template>
 
