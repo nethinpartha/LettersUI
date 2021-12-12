@@ -2,36 +2,48 @@
     <!-- <p>{{ contents }}</p> -->
     <div>
         <div><Header /></div>
-        <div v-for="(con, index) in contents.data" :key="index">
-            <div>{{ con.value }}</div >
+        <div class="read-container">
+            <section class="side-menu-container">
+                
+            </section>
+            <section class="blog-container">
+                <h5>{{ contents.display_name }}</h5>
+                <div v-for="(con, index) in contents.data" :key="index">
+                    <p>{{ con.value }}</p >
+                </div>
+                <!-- <br> -->
+                <div class="user-touch-div">
+                    <input type="button" value="Like" @click.prevent="updateLikes()"><span>{{ contents.updated.likes }}</span>
+                    <input type="button" value="Dislike" @click.prevent="updateDislikes()"><span>{{ contents.updated.dislikes }}</span>
+                </div>
+                <div class="user-comment-div">
+                    <div>
+                        <h2>Add comment..</h2>
+                        <textarea type="text" class="comment" placeholder="Write a comment" v-model="commentValue"></textarea>
+                        <button @click.prevent="updateComment()" type="submit">post</button>
+                    </div>
+                    <h2>Shared comments..</h2>
+                    <div class="view-comment" v-for="(comment, index) in contents.updated.comments" :key="index">
+                        <p>{{ comment }}</p>
+                    </div>
+                </div>
+            </section>
+            <section class="blog-ref-container">
+                <div class="blog-letst-content">
+                    <p> Latest Contents </p>
+                    <div v-for="lcon in contents.latest_contents" :key="lcon.blog_id">
+                        <a :href="viewUrl(lcon.blog_id)">{{ lcon.display_name  }}</a>
+                    </div>
+                </div>
+                <div class="blog-popular-content">
+                    <p>Popular contents</p>
+                    <div v-for="pcon in contents.popular_contents" :key="pcon.blog_id">
+                    <a :href="viewUrl(pcon.blog_id)">{{ pcon.display_name  }}</a>
+                    </div>
+                </div>
+            </section>
         </div>
-        <br>
-        <div>
-            <input type="button" value="like" @click="updateLikes()"><p>{{ contents.updated.likes }}</p>
-            <input type="button" value="Dislike" @click="updateDislikes()"><p>{{ contents.updated.dislikes }}</p>
-        </div>
-        <div>
-            <p> Latest Contents </p>
-            <div v-for="lcon in contents.latest_contents" :key="lcon.blog_id">
-            <a :href="viewUrl(lcon.blog_id)">{{ lcon.display_name  }}</a>
-            </div>
-        </div>
-        <div>
-            <p>Popular contents</p>
-            <div v-for="pcon in contents.popular_contents" :key="pcon.blog_id">
-            <a :href="viewUrl(pcon.blog_id)">{{ pcon.display_name  }}</a>
-            </div>
-        </div>
-        <div>
-            <p><b>Add comment..</b></p>
-            <textarea type="text" class="comment" placeholder="Write a comment" v-model="commentValue" 
-            @keyup.enter="updateComment()"></textarea>
-          <button @click="updateComment()" type="submit">post</button>
-        </div>
-        <p> <b>shared comments..</b></p>
-        <div v-for="(comment, index) in contents.updated.comments" :key="index">
-            <div>{{ comment }}</div>
-        </div>
+       
     </div>    
 </template>
 

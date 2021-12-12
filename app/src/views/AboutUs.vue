@@ -1,6 +1,7 @@
 <template>
-    <div>
+    <div class="about-us">
         <p>Founders</p>
+        <p></p>
     </div>
 </template>
 
