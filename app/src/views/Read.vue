@@ -1,49 +1,59 @@
 <template>
-    <!-- <p>{{ contents }}</p> -->
     <div>
-        <div><Header /></div>
-        <div class="read-container">
-            <section class="side-menu-container">
-                
-            </section>
-            <section class="blog-container">
-                <h5>{{ contents.display_name }}</h5>
-                <div v-for="(con, index) in contents.data" :key="index">
-                    <p>{{ con.value }}</p >
-                </div>
-                <!-- <br> -->
-                <div class="user-touch-div">
-                    <input type="button" value="Like" @click.prevent="updateLikes()"><span>{{ contents.updated.likes }}</span>
-                    <input type="button" value="Dislike" @click.prevent="updateDislikes()"><span>{{ contents.updated.dislikes }}</span>
-                </div>
-                <div class="user-comment-div">
-                    <div>
-                        <h2>Add comment..</h2>
-                        <textarea type="text" class="comment" placeholder="Write a comment" v-model="commentValue"></textarea>
-                        <button @click.prevent="updateComment()" type="submit">post</button>
+    <Header />
+
+    <div class="container" style="margin-top: 100px">
+        
+        <div class="row">
+             <div class="col-8">
+                <div class="text-dark fs-2" >{{ contents.display_name }}</div>
+                    <div class="loader" v-html="JsonToHtml(contents.data)"></div>
+
+                    <figure>
+                            <figcaption class="blockquote-footer my-3">  
+                                <cite>
+                                    <span>
+                                        <span v-if="contents.type == 'story'">posted by</span>
+                                        <span v-if="contents.type == 'question'">raised by</span>
+                                        <span class="mx-1 fs-6">{{ contents.created_by  }} </span>
+                                        at <span class="mx-1">{{ contents.created_at }}</span>
+                                    </span>
+                                    </cite>
+                            </figcaption>
+                    </figure>
+
+                <div v-if="contents.type == 'story'" class="lrctrls">
+                    <button type="button" class="btn btn-primary btn-sm" @click.prevent="handlePay">pay</button>
+                    <span class="mx-2">{{ contents.updates.pays }}</span>
+                    <div id="userHelp" class="form-text">By watching an Ad video, you are paying the user for this content. If you found this 
+                        content worth, do pay and feel good that you paid. You can pay any number of times if you found the user deserve to be paid for
+                        the content.
                     </div>
-                    <h2>Shared comments..</h2>
-                    <div class="view-comment" v-for="(comment, index) in contents.updated.comments" :key="index">
-                        <p>{{ comment }}</p>
-                    </div>
+
                 </div>
-            </section>
-            <section class="blog-ref-container">
-                <div class="blog-letst-content">
-                    <p> Latest Contents </p>
-                    <div v-for="lcon in contents.latest_contents" :key="lcon.blog_id">
-                        <a :href="viewUrl(lcon.blog_id)">{{ lcon.display_name  }}</a>
-                    </div>
+
+                <h4 class="my-3 fs-4 text-muted">Your view</h4>
+                <Editor @onPost="handleComment" />
+                <cite v-if="errShow.contentNull" class="error fs-6">Write something...</cite>
+
+                <div style="margin-top: 80px" v-for="comment in contents.updates.comments" :key="comment.id">
+                    <figure>
+                            <blockquote class="blockquote">
+                                <div v-html="JsonToHtml(comment.data)"></div>
+                            </blockquote>
+                            <figcaption class="blockquote-footer">
+                                <cite>by <span class="mx-1">{{  comment.user }}</span> at <span class="mx-1">{{ comment.created_at }}</span>  </cite>
+                                 <cite>
+                                     <a v-if="contents.type !== 'story'" href="" style="color: blue" >pay</a>
+                                 </cite> 
+                            </figcaption>
+                    </figure>
+                    <hr>
                 </div>
-                <div class="blog-popular-content">
-                    <p>Popular contents</p>
-                    <div v-for="pcon in contents.popular_contents" :key="pcon.blog_id">
-                    <a :href="viewUrl(pcon.blog_id)">{{ pcon.display_name  }}</a>
-                    </div>
-                </div>
-            </section>
+             </div> 
         </div>
-       
+    </div>
+    <Footer />
     </div>    
 </template>
 
@@ -51,58 +61,87 @@
 
 import axios from 'axios'
 import Header from "../components/header.vue"
+import Footer from "../components/footer.vue"
+import Editor from "../components/Editor.vue"
+import { QuillDeltaToHtmlConverter } from 'quill-delta-to-html'
+import { urls } from '../helper'
 
 export default {
     name: "Read",
     components: {
-        Header
+        Header,
+        Footer,
+        Editor
+        
     },
     data(){
         return{
             contents: [],
-            commentValue: ""
+            commentValue: "",
+            pays: 0,
+            errShow: {
+                contentNull: false
+            }
         }
     },
     beforeMount(){
-        let readBlogUrl = process.env.VUE_APP_BASE_URL + process.env.VUE_APP_APP_URL + process.env.VUE_APP_READ_URL
-        let viewUrl = readBlogUrl + "?blog_id=" + this.$route.params.id
-        console.log("Before Mount")
-        axios.get(viewUrl).then(response => (this.contents = response.data))
-        console.log(this.contents)
+        let readBlogUrl = urls().CORE_BASE + urls().CORE_APP + urls().GLOBAL_READ
+        + "?blog_id=" + this.$route.params.id
+        axios.get(readBlogUrl).then(response => (this.contents = response.data))
     },
     methods: {
+        JsonToHtml(data){
+            let cfg = {};
+            let converter = new QuillDeltaToHtmlConverter(data, cfg);
+            return converter.convert();
+        },
         viewUrl(blogId){
             return "/view/" + blogId
         },
-        updateComment(){
-            let updateBlogUrl = process.env.VUE_APP_BASE_URL + process.env.VUE_APP_APP_URL + process.env.VUE_APP_UPDATE_URL
+        async handlePay(){ 
+            const response = await axios.put(urls().CORE_BASE + urls().CORE_APP + urls().GLOBAL_UPDATE, 
+            {
+                "blog_id": this.$route.params.id,
+                "type": "pay"
+            })
+            this.$router.go(this.$router.currentRoute)
+        },
+        async handleComment(value){
+            if (value.length == 1){
+                    let content = value[0].insert.replace("\n", "")
+                    if(!content){
+                        this.errShow.contentNull = true
+                        return
+                    }
+                }
+            let updateBlogUrl = urls().CORE_BASE + urls().CORE_APP
+            if (this.$store.getters.stateValue.user){
+                updateBlogUrl += urls().UPDATE
+            }
+            else{
+                updateBlogUrl += urls().GLOBAL_UPDATE
+            }
             let updateReq = {
                 "blog_id": this.$route.params.id,
-                "comment": this.commentValue,
+                "comment": value,
                 "type": "comment"
             }
-            axios.put(updateBlogUrl, updateReq).then(response => (this.$router.go(this.$router.currentRoute)))
-        },
-        updateLikes(){
-            let updateBlogUrl = process.env.VUE_APP_BASE_URL + process.env.VUE_APP_APP_URL + process.env.VUE_APP_UPDATE_URL
-            let updateReq = {
-                "blog_id": this.$route.params.id,
-                "type": "like"
+            const response = await axios.put(updateBlogUrl, updateReq)
+            if (response.data.status == "success"){
+                this.$router.go(this.$router.currentRoute)
             }
-            axios.put(updateBlogUrl, updateReq).then(response => (this.$router.go(this.$router.currentRoute)))
-        },
-        updateDislikes(){
-            let updateBlogUrl = process.env.VUE_APP_BASE_URL + process.env.VUE_APP_APP_URL + process.env.VUE_APP_UPDATE_URL
-            let updateReq = {
-                "blog_id": this.$route.params.id,
-                "type": "dislike"
-            }
-            axios.put(updateBlogUrl, updateReq).then(response => (this.$router.go(this.$router.currentRoute)))
         }
-    }
+    },
 }
 </script>
 
 <style>
+
+pre{
+    background-color: rgb(93, 88, 133);
+    color: white;
+}
+
+
 
 </style>
