@@ -1,45 +1,26 @@
-name: Build and Analyze
+name: Build
 
 on:
   push:
     branches:
       - main
 
+
 jobs:
   build:
-    name: Build and analyze
+    name: Build
     runs-on: ubuntu-latest
-    
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v2
         with:
-          fetch-depth: 0  # Ensure full history for SonarQube analysis
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 18  # Adjust Node.js version as needed
-
-      - name: Install Dependencies
-        working-directory: app  # Set working directory to "app"
-        run: npm install
-
-      - name: SonarQube Scan
-        uses: SonarSource/sonarqube-scan-action@v4
+          fetch-depth: 0  # Shallow clones should be disabled for a better relevancy of analysis
+      - uses: sonarsource/sonarqube-scan-action@master
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-        with:
-          projectBaseDir: app  # Set the project directory for SonarQube
-          args: >
-            -Dsonar.projectKey=sonar-project.properties
-            -Dsonar.sources=app
-            -Dsonar.exclusions=node_modules/**,dist/**  # Exclude unwanted directories
-
-      # Uncomment this if you want to enforce Quality Gate rules
-      # - name: SonarQube Quality Gate
-      #   uses: SonarSource/sonarqube-quality-gate-action@v1
+      # If you wish to fail your job when the Quality Gate is red, uncomment the
+      # following lines. This would typically be used to fail a deployment.
+      # - uses: sonarsource/sonarqube-quality-gate-action@master
       #   timeout-minutes: 5
       #   env:
       #     SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
