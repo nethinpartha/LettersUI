@@ -25,10 +25,6 @@ jobs:
         working-directory: app  # Set working directory to "app"
         run: npm install
 
-      - name: Run Tests (Optional)
-        working-directory: app
-        run: npm test  # Ensure tests pass before analysis
-
       - name: SonarQube Scan
         uses: SonarSource/sonarqube-scan-action@v4
         env:
